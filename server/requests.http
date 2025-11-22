@@ -1,0 +1,107 @@
+@baseUrl = http://localhost:3001/api
+@contentType = application/json
+@authToken = {{login.response.body.accessToken}}
+
+### Health Check
+GET http://localhost:3001/
+
+### -----------------------
+### AUTHENTICATION
+### -----------------------
+
+### Signup
+# @name signup
+POST {{baseUrl}}/auth/signup
+Content-Type: {{contentType}}
+
+{
+    "email": "testuser@example.com",
+    "password": "password123",
+    "name": "Test User"
+}
+
+### Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+    "email": "testuser@example.com",
+    "password": "password123"
+}
+
+### Get Current User Profile
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{authToken}}
+
+### -----------------------
+### PRODUCTS
+### -----------------------
+
+### Get All Products
+GET {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+
+### Create Product
+# @name createProduct
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+    "sku": "TEST-SKU-001",
+    "name": "Test Product",
+    "category": "Electronics",
+    "uom": "UNIT",
+    "minStock": 10,
+    "description": "A test product created via REST Client"
+}
+
+### Get Product by ID
+GET {{baseUrl}}/products/{{createProduct.response.body.id}}
+Authorization: Bearer {{authToken}}
+
+### Get Product Stock
+GET {{baseUrl}}/products/{{createProduct.response.body.id}}/stock
+Authorization: Bearer {{authToken}}
+
+### Update Product
+PUT {{baseUrl}}/products/{{createProduct.response.body.id}}
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+    "name": "Updated Test Product",
+    "minStock": 20
+}
+
+### Delete Product
+DELETE {{baseUrl}}/products/{{createProduct.response.body.id}}
+Authorization: Bearer {{authToken}}
+
+### -----------------------
+### WAREHOUSES
+### -----------------------
+
+### Get All Warehouses
+GET {{baseUrl}}/warehouses
+Authorization: Bearer {{authToken}}
+
+### Create Warehouse
+# @name createWarehouse
+POST {{baseUrl}}/warehouses
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+    "name": "Main Warehouse",
+    "location": "New York"
+}
+
+### -----------------------
+### TRANSACTIONS
+### -----------------------
+
+### Get Transactions
+GET {{baseUrl}}/transactions
+Authorization: Bearer {{authToken}}

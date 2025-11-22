@@ -13,8 +13,13 @@ export const AuthProvider = ({ children }) => {
             // Decode token or fetch user profile if needed. 
             // For MVP, we just trust the token exists and maybe store user info in localStorage too.
             const storedUser = localStorage.getItem('user');
-            if (storedUser) {
-                setUser(JSON.parse(storedUser));
+            if (storedUser && storedUser !== "undefined") {
+                try {
+                    setUser(JSON.parse(storedUser));
+                } catch (error) {
+                    console.error("Failed to parse user data:", error);
+                    localStorage.removeItem('user');
+                }
             }
         }
         setLoading(false);
@@ -22,9 +27,11 @@ export const AuthProvider = ({ children }) => {
 
     const login = (newToken, userData) => {
         localStorage.setItem('token', newToken);
-        localStorage.setItem('user', JSON.stringify(userData));
+        if (userData) {
+            localStorage.setItem('user', JSON.stringify(userData));
+            setUser(userData);
+        }
         setToken(newToken);
-        setUser(userData);
     };
 
     const logout = () => {
