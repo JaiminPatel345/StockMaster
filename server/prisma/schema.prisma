@@ -23,8 +23,17 @@ model Warehouse {
   location           String?
   type               String        @default("MAIN")
   stock              Stock[]
+  locations          Location[]
   sourceTransactions Transaction[] @relation("SourceWarehouse")
   targetTransactions Transaction[] @relation("TargetWarehouse")
+}
+
+model Location {
+  id          String    @id @default(uuid())
+  name        String
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  stock       Stock[]
 }
 
 model Product {
@@ -36,6 +45,7 @@ model Product {
   uom              String            @default("UNIT")
   minStock         Int               @default(10)
   price            Float             @default(0)
+  isActive         Boolean           @default(true)
   stock            Stock[]
   transactionItems TransactionItem[]
 }
@@ -44,9 +54,11 @@ model Stock {
   id          String    @id @default(uuid())
   warehouseId String
   productId   String
+  locationId  String?
   quantity    Int       @default(0)
   product     Product   @relation(fields: [productId], references: [id])
   warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  location    Location? @relation(fields: [locationId], references: [id])
 
   @@unique([warehouseId, productId])
 }
